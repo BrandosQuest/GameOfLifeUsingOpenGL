@@ -7,8 +7,12 @@ in vec3 ourCoords;
 uniform float timeFormInit;
 uniform float width;
 uniform float hight;
+void main()
+{
+    FragColor= vec4(ourColor, 1.0);
+}
 
-float noiseBrando(){
+/*float noiseBrando(){
     int time=int (timeFormInit*1000);
     return float((time%200))/200.0;
 }
@@ -43,7 +47,7 @@ void main()
         FragColor= vec4(0,(1*glow*sdf)+4,1,1);
     }
     
-}
+}*/
 
 /*
 FragColor= vec4(0,0,0,1);

@@ -4,16 +4,66 @@
 #include <shader_s.h>
 
 #include <iostream>
+#include <vector>
+using namespace std;
+
+void parametersInput(int *rows, int* coloums) {
+    std::cout << "ciaooo, insert the number of rows and coloums for the game" << std::endl;
+    
+    cin>>*rows;
+    //cout << *rows;
+    cin >> *coloums;
+    //cout << *coloums;
+}
+struct bQuad {
+    float vertices[12];//4 points of x y z
+    bool alive = false;
+    //unsigned int indices[] = {0, 1, 2, 3};
+};
+
+void setVetixesOfQuadsInMatrix(std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
+    float cellWidth = 2.0 / coloums;
+    float cellHight = 2.0 / rows;
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < coloums; j++)
+        {
+            float verticess[12] = {
+                (j * cellWidth) - 1.0            , 1.0 - (i * cellHight)                , 0.0f,  // top left
+                (j * cellWidth) - 1.0 + cellWidth, 1.0 - (i * cellHight)                , 0.0f,  // top right
+                (j * cellWidth) - 1.0            , 1.0 - ((i * cellHight) + cellHight)  , 0.0f,  // bottom left 
+                (j * cellWidth) - 1.0 + cellWidth, 1.0 - ((i * cellHight) + cellHight)  , 0.0f,  // bottom right 
+            };
+            for (int v = 0; v < 12; ++v) {
+                matrix[i][j].vertices[v] = verticess[v];
+                cout << verticess[v] << ", ";
+            }
+        }
+    }
+    /*for (auto& row : matrix) {
+        for (auto& cell : row) {
+            cell.vertices = true;
+        }
+    }*/
+}
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
-
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 int main()
 {
+    int coloums = 0;
+    int rows = 0;
+    parametersInput(&rows, &coloums);
+    //cout << rows;
+    //cout << coloums;
+    // Create a matrix with `rows` rows and `cols` columns, initialized to 0
+    std::vector<std::vector<bQuad>> matrix(rows, std::vector<bQuad>(coloums));
+    setVetixesOfQuadsInMatrix(matrix, rows, coloums);
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -62,9 +112,9 @@ int main()
         //-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
         // 0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f   // top
          -1.0f, 1.0f, 0.0f,  1.0f, 0.0f, 0.0f,  // top left
-        -1.0f, -1.0f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
+        -1.0f, -1.0f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom left
          1.0f,  -1.0f, 0.0f,  0.0f, 0.0f, 1.0f,   // bottom right 
-         1.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f  // top right
+         1.0f, 1.0f, 0.0f,  1.0f, 0.0f, 0.0f,  // top right
 
     };
     unsigned int indices[] = {  // note that we start from 0!
