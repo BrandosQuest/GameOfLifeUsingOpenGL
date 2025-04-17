@@ -8,19 +8,16 @@
 #include <array>
 using namespace std;
 
-void parametersInput(int *rows, int* coloums) {
+void parametersInput(int* rows, int* coloums) {
     std::cout << "ciaooo, insert the number of rows and coloums for the game" << std::endl;
-    
-    cin>>*rows;
-    //cout << *rows;
+
+    cin >> *rows;
     cin >> *coloums;
-    //cout << *coloums;
 }
 struct bQuad {
     float vertices[12];//4 points of x y z
     bool alive = false;
     array<float, 3> colours;//rgb
-    //unsigned int indices[] = {0, 1, 2, 3};
 };
 
 void setVetixesOfQuadsInMatrix(std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
@@ -38,13 +35,11 @@ void setVetixesOfQuadsInMatrix(std::vector<std::vector<bQuad>>& matrix, int rows
             };
             for (int v = 0; v < 12; ++v) {
                 matrix[i][j].vertices[v] = verticess[v];
-                //cout << verticess[v] << ", ";
             }
-
 
             array<float, 3> colourss;
             if ((i + j) % 2 == 0) {
-                colourss = { 0.5f, 0.5f, 0.0f };
+                colourss = { 0.5f, 0.5f, 1.0f };
             }
             else {
                 colourss = { 0.1f, 0.1f, 0.1f };
@@ -52,11 +47,6 @@ void setVetixesOfQuadsInMatrix(std::vector<std::vector<bQuad>>& matrix, int rows
             matrix[i][j].colours = colourss;
         }
     }
-    /*for (auto& row : matrix) {
-        for (auto& cell : row) {
-            cell.vertices = true;
-        }
-    }*/
 }
 void setVetixesAndIndexes(int sizeVertixes, int sizeIndexes, float* vertixesAndColour, unsigned int* indexes, std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
     int quadCounter = 0;
@@ -66,40 +56,32 @@ void setVetixesAndIndexes(int sizeVertixes, int sizeIndexes, float* vertixesAndC
         {
             //firstQuad
             vertixesAndColour[(quadCounter * 24) + 0] = matrix[i][j].vertices[0];
-            vertixesAndColour[(quadCounter*24)+1]= matrix[i][j].vertices[1];
-            vertixesAndColour[(quadCounter*24)+2]= matrix[i][j].vertices[2];
-            vertixesAndColour[(quadCounter*24)+3]= matrix[i][j].colours[0];
-            vertixesAndColour[(quadCounter*24)+4]= matrix[i][j].colours[1];
-            vertixesAndColour[(quadCounter*24)+5]= matrix[i][j].colours[2];
+            vertixesAndColour[(quadCounter * 24) + 1] = matrix[i][j].vertices[1];
+            vertixesAndColour[(quadCounter * 24) + 2] = matrix[i][j].vertices[2];
+            vertixesAndColour[(quadCounter * 24) + 3] = matrix[i][j].colours[0];
+            vertixesAndColour[(quadCounter * 24) + 4] = matrix[i][j].colours[1];
+            vertixesAndColour[(quadCounter * 24) + 5] = matrix[i][j].colours[2];
             //firstQuad
-            vertixesAndColour[(quadCounter*24)+6]= matrix[i][j].vertices[3];
-            vertixesAndColour[(quadCounter*24)+7]= matrix[i][j].vertices[4];
-            vertixesAndColour[(quadCounter*24)+8]= matrix[i][j].vertices[5];
-            vertixesAndColour[(quadCounter*24)+9]= matrix[i][j].colours[0];
-            vertixesAndColour[(quadCounter*24)+10]= matrix[i][j].colours[1];
-            vertixesAndColour[(quadCounter*24)+11]= matrix[i][j].colours[2];
+            vertixesAndColour[(quadCounter * 24) + 6] = matrix[i][j].vertices[3];
+            vertixesAndColour[(quadCounter * 24) + 7] = matrix[i][j].vertices[4];
+            vertixesAndColour[(quadCounter * 24) + 8] = matrix[i][j].vertices[5];
+            vertixesAndColour[(quadCounter * 24) + 9] = matrix[i][j].colours[0];
+            vertixesAndColour[(quadCounter * 24) + 10] = matrix[i][j].colours[1];
+            vertixesAndColour[(quadCounter * 24) + 11] = matrix[i][j].colours[2];
             //firstQuad
-            vertixesAndColour[(quadCounter*24)+12]= matrix[i][j].vertices[6];
-            vertixesAndColour[(quadCounter*24)+13]= matrix[i][j].vertices[7];
-            vertixesAndColour[(quadCounter*24)+14]= matrix[i][j].vertices[8];
-            vertixesAndColour[(quadCounter*24)+15]= matrix[i][j].colours[0];
-            vertixesAndColour[(quadCounter*24)+16]= matrix[i][j].colours[1];
-            vertixesAndColour[(quadCounter*24)+17]= matrix[i][j].colours[2];
+            vertixesAndColour[(quadCounter * 24) + 12] = matrix[i][j].vertices[6];
+            vertixesAndColour[(quadCounter * 24) + 13] = matrix[i][j].vertices[7];
+            vertixesAndColour[(quadCounter * 24) + 14] = matrix[i][j].vertices[8];
+            vertixesAndColour[(quadCounter * 24) + 15] = matrix[i][j].colours[0];
+            vertixesAndColour[(quadCounter * 24) + 16] = matrix[i][j].colours[1];
+            vertixesAndColour[(quadCounter * 24) + 17] = matrix[i][j].colours[2];
             //firstQuad
-            vertixesAndColour[(quadCounter*24)+18]= matrix[i][j].vertices[9];
-            vertixesAndColour[(quadCounter*24)+19]= matrix[i][j].vertices[10];
-            vertixesAndColour[(quadCounter*24)+20]= matrix[i][j].vertices[11];
-            vertixesAndColour[(quadCounter*24)+21]= matrix[i][j].colours[0];
-            vertixesAndColour[(quadCounter*24)+22]= matrix[i][j].colours[1];
-            vertixesAndColour[(quadCounter*24)+23]= matrix[i][j].colours[2];
-
-            //indexes
-            /*indexes[(quadCounter * 6) + 0] = (quadCounter * 4) + 0;//0
-            indexes[(quadCounter * 6) + 1] = (quadCounter * 4) + 1;//1
-            indexes[(quadCounter * 6) + 2] = (quadCounter * 4) + 2;//2
-            indexes[(quadCounter * 6) + 3] = (quadCounter * 4) + 1;//1
-            indexes[(quadCounter * 6) + 4] = (quadCounter * 4) + 2;//2
-            indexes[(quadCounter * 6) + 5] = (quadCounter * 4) + 3;//3*/
+            vertixesAndColour[(quadCounter * 24) + 18] = matrix[i][j].vertices[9];
+            vertixesAndColour[(quadCounter * 24) + 19] = matrix[i][j].vertices[10];
+            vertixesAndColour[(quadCounter * 24) + 20] = matrix[i][j].vertices[11];
+            vertixesAndColour[(quadCounter * 24) + 21] = matrix[i][j].colours[0];
+            vertixesAndColour[(quadCounter * 24) + 22] = matrix[i][j].colours[1];
+            vertixesAndColour[(quadCounter * 24) + 23] = matrix[i][j].colours[2];
 
             indexes[(quadCounter * 6) + 0] = (quadCounter * 4) + 0;//0
             indexes[(quadCounter * 6) + 1] = (quadCounter * 4) + 2;//2
@@ -110,24 +92,7 @@ void setVetixesAndIndexes(int sizeVertixes, int sizeIndexes, float* vertixesAndC
 
             quadCounter++;
         }
-    }/*for (int i = 0; i < 4 * rows * coloums * 6; i++)
-    {
-        //vertixesAndColour[i] = 0.0;
-        cout << vertixesAndColour[i] << ", ";
-        if ((i + 1) % 6 == 0)
-            cout << endl;
     }
-    int a = 0;
-    cin >> a;
-     for (int i = 0; i < 6 * rows * coloums; i++)
-    {
-        cout << indexes[i] << ", ";
-        if ((i + 1) % 6 == 0)
-            cout << endl;
-    }
-    int a = 0;
-    cin >> a;*/
-    
 }
 
 
@@ -142,9 +107,6 @@ int main()
     int coloums = 0;
     int rows = 0;
     parametersInput(&rows, &coloums);
-    //cout << rows;
-    //cout << coloums;
-    // Create a matrix with `rows` rows and `cols` columns, initialized to 0
     std::vector<std::vector<bQuad>> matrix(rows, std::vector<bQuad>(coloums));
     setVetixesOfQuadsInMatrix(matrix, rows, coloums);
 
@@ -190,63 +152,11 @@ int main()
     // Add this after creating the OpenGL context (after glfwMakeContextCurrent)
     //glfwSwapInterval(1); // Enable vsync
 
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
-    /*float vertices[] = {
-        // positions         // colors
-        // 0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
-        //-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
-        // 0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f   // top
-         -1.0f, 1.0f, 0.0f,  1.0f, 0.0f, 0.0f,  // top left
-        -1.0f, -1.0f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom left
-         1.0f,  -1.0f, 0.0f,  0.0f, 0.0f, 1.0f,   // bottom right 
-         1.0f, 1.0f, 0.0f,  1.0f, 0.0f, 0.0f,  // top right
-
-    };
-    unsigned int indices[] = {  // note that we start from 0!
-    0, 1, 3,   // first triangle
-    1, 2, 3    // second triangle
-    };*/
-    /*for (int i = 0; i < 4 * rows * coloums * 6; i++)
-    {
-        verticesAndColour[i] = 0.0;
-        cout << verticesAndColour[i] << ", ";
-        if ((i+1) % 6 == 0)
-            cout << endl;
-    }
-    int a = 0;
-    cin >> a;
     
-    for (int i = 0; i < 6 * rows * coloums; i++)
-    {
-        indices[i] = 0.0;
-        cout << indices[i] << ", ";
-        if ((i + 1) % 6 == 0)
-            cout << endl;
-    }
-    int a = 0;
-    cin >> a;*/
-    /*for (int i = 0; i < 4 * rows * coloums * 6; i++)
-    {
-        cout << verticesAndColour[i] << ", ";
-        if ((i + 1) % 6 == 0)
-            cout << endl;
-    }
-    cout << endl;
-    for (int i = 0; i < 6 * rows * coloums; i++)
-    {
-        cout << indices[i] << ", ";
-        if ((i + 1) % 6 == 0)
-            cout << endl;
-    }
-    int a = 0;
-    //cin >> a;*/
     float* verticesAndColour = new float[4 * rows * coloums * 6];
     unsigned int* indices = new unsigned int[6 * rows * coloums];
-    setVetixesAndIndexes(4 * rows * coloums*6, 6 * rows * coloums, verticesAndColour, indices, matrix, rows, coloums);
-    
-    
-    
+    setVetixesAndIndexes(4 * rows * coloums * 6, 6 * rows * coloums, verticesAndColour, indices, matrix, rows, coloums);
+
 
 
     unsigned int VBO, VAO;
@@ -260,12 +170,12 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     //glBufferData(GL_ARRAY_BUFFER, sizeof(verticesAndColour), verticesAndColour, GL_STATIC_DRAW);
     glBufferData(GL_ARRAY_BUFFER, (4 * rows * coloums * 6) * sizeof(float), verticesAndColour, GL_STATIC_DRAW);
-    
+
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, (6 * rows * coloums) * sizeof(unsigned int), indices, GL_STATIC_DRAW);
-    
+
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -276,9 +186,6 @@ int main()
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     // glBindVertexArray(0);
-    
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
 
     //ourShader.use();
     //float offset = 0.5f;
@@ -317,7 +224,7 @@ int main()
         int numOfVert = 6 * rows * coloums;
         glDrawElements(GL_TRIANGLES, numOfVert, GL_UNSIGNED_INT, 0);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
-        
+
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
