@@ -6,6 +6,9 @@
 #include <iostream>
 #include <vector>
 #include <array>
+//#include "../thirdparty/SDL3-3.2.10/include/SDL3/SDL_events.h"
+//#include "../thirdparty/SDL3-3.2.10/include/SDL3/SDL.h"
+
 using namespace std;
 
 void parametersInput(int* rows, int* coloums) {
@@ -39,7 +42,7 @@ void setVetixesOfQuadsInMatrix(std::vector<std::vector<bQuad>>& matrix, int rows
 
             array<float, 3> colourss;
             if ((i + j) % 2 == 0) {
-                colourss = { 0.5f, 0.5f, 1.0f };
+                colourss = { 0.5f, 0.5f, 0.0f };
             }
             else {
                 colourss = { 0.1f, 0.1f, 0.1f };
@@ -196,6 +199,7 @@ int main()
 
     // render loop
     // -----------
+    //while (!glfwWindowShouldClose(window) && SDL_PollEvent(&event))
     while (!glfwWindowShouldClose(window))
     {
         // input
