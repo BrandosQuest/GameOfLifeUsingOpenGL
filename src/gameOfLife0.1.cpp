@@ -114,24 +114,6 @@ void updateGameMatrixAfterClick(double xpos, double ypos, std::vector<std::vecto
     }
     matrix[row][coloum].colours = colourss;
 }
-void simulateAstep(std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < coloums; j++)
-        {
-
-        }
-    }
-    /*array<float, 3> colourss;
-    if ((row + coloum) % 2 == 0) {
-        colourss = { 0.0f, 0.5f, 0.0f };
-    }
-    else {
-        colourss = { 0.3f, 0.1f, 0.1f };
-    }
-    matrix[row][coloum].colours = colourss;*/
-    
-}
 void updateVertixesColour(float* vertixesAndColour, std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
     int quadCounter = 0;
     for (int i = 0; i < rows; i++)
@@ -170,6 +152,55 @@ void updateVertixesColour(float* vertixesAndColour, std::vector<std::vector<bQua
             quadCounter++;
         }
     }
+}
+
+
+void lifeCicleCellUpdate(std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
+    for (int row = 0; row < rows; row++)
+    {
+        for (int coloum = 0; coloum < coloums; coloum++)
+        {
+            int aliveNeigbohursCounter = 0;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (i != 1 && j != 1 && row - 1 + i >= 0 && coloum - 1 + i >= 0 && row - 1 + i < rows && coloum - 1 + i < coloums)
+                        if (matrix[row-1+i][coloum - 1 + i].alive)
+                            aliveNeigbohursCounter++;
+                }
+            }
+            if (aliveNeigbohursCounter == 2 || aliveNeigbohursCounter == 3) {
+                matrix[row][coloum].alive = true;
+                array<float, 3> colourss;
+                if ((row + coloum) % 2 == 0) {
+                    colourss = { 0.0f, 0.5f, 0.0f };
+                }
+                else {
+                    colourss = { 0.3f, 0.1f, 0.1f };
+                }
+                matrix[row][coloum].colours = colourss;
+            }
+        }
+    }
+}
+void simulateAstep(std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
+    lifeCicleCellUpdate(matrix, rows, coloums);
+    /*for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < coloums; j++)
+        {
+
+        }
+    }
+    array<float, 3> colourss;
+    if ((row + coloum) % 2 == 0) {
+        colourss = { 0.0f, 0.5f, 0.0f };
+    }
+    else {
+        colourss = { 0.3f, 0.1f, 0.1f };
+    }
+    matrix[row][coloum].colours = colourss;*/
 }
 //void simulateAstep(std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) 
 
@@ -321,8 +352,12 @@ int main()
         }
         if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
             startSim=true;
+
         if (startSim == true) {
-            //simulateAstep();
+            simulateAstep(matrix, rows, coloums);
+            updateVertixesColour(verticesAndColour, matrix, rows, coloums);
+            glBufferData(GL_ARRAY_BUFFER, (4 * rows * coloums * 6) * sizeof(float), verticesAndColour, GL_STATIC_DRAW);
+            cout << "a step\n";
         }
             
 
