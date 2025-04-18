@@ -25,6 +25,7 @@ endif()
 
 project(mygame)
 
+#set(SDL_STATIC ON)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -33,6 +34,7 @@ set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
 
+#add_subdirectory(thirdparty/SDL-release-2.30.5)		#window opener
 add_subdirectory(thirdparty/glfw-3.3.2)			#window oppener
 add_subdirectory(thirdparty/glad)				#opengl loader
 add_subdirectory(thirdparty/stb_image)			#loading immaged
@@ -42,7 +44,6 @@ add_subdirectory(thirdparty/raudio)				#audio
 add_subdirectory(thirdparty/glm)				#math
 add_subdirectory(thirdparty/imgui-docking)		#ui
 add_subdirectory(thirdparty/gl2d)				#rendering
-#add_subdirectory(thirdparty/SDL3-3.2.10)		#UserInput
 
 
 # MY_SOURCES is defined to be a list of all the source files for my game 
@@ -96,7 +97,7 @@ target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURC
 
 #enet not working yet on linux for some reason
 target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE glm glfw 
-	glad stb_image stb_truetype gl2d raudio imgui)
+	glad stb_image stb_truetype gl2d raudio imgui )
 
 
 

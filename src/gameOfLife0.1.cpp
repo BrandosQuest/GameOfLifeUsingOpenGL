@@ -1,3 +1,4 @@
+//#include <SDL2/SDL.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -97,7 +98,80 @@ void setVetixesAndIndexes(int sizeVertixes, int sizeIndexes, float* vertixesAndC
         }
     }
 }
+void updateGameMatrixAfterClick(double xpos, double ypos, std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
+    float cellWidth = 2.0 / coloums;
+    float cellHight = 2.0 / rows;
+    int coloum = int((xpos+1.0)/ cellWidth);
+    int row = int((ypos +1.0)/ cellHight);
+    matrix[row][coloum].alive = true;
 
+    array<float, 3> colourss;
+    if ((row + coloum) % 2 == 0) {
+        colourss = { 0.0f, 0.5f, 0.0f };
+    }
+    else {
+        colourss = { 0.3f, 0.1f, 0.1f };
+    }
+    matrix[row][coloum].colours = colourss;
+}
+void simulateAstep(std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < coloums; j++)
+        {
+
+        }
+    }
+    /*array<float, 3> colourss;
+    if ((row + coloum) % 2 == 0) {
+        colourss = { 0.0f, 0.5f, 0.0f };
+    }
+    else {
+        colourss = { 0.3f, 0.1f, 0.1f };
+    }
+    matrix[row][coloum].colours = colourss;*/
+    
+}
+void updateVertixesColour(float* vertixesAndColour, std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
+    int quadCounter = 0;
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < coloums; j++)
+        {
+            //firstQuad
+            vertixesAndColour[(quadCounter * 24) + 0] = matrix[i][j].vertices[0];
+            vertixesAndColour[(quadCounter * 24) + 1] = matrix[i][j].vertices[1];
+            vertixesAndColour[(quadCounter * 24) + 2] = matrix[i][j].vertices[2];
+            vertixesAndColour[(quadCounter * 24) + 3] = matrix[i][j].colours[0];
+            vertixesAndColour[(quadCounter * 24) + 4] = matrix[i][j].colours[1];
+            vertixesAndColour[(quadCounter * 24) + 5] = matrix[i][j].colours[2];
+            //firstQuad
+            vertixesAndColour[(quadCounter * 24) + 6] = matrix[i][j].vertices[3];
+            vertixesAndColour[(quadCounter * 24) + 7] = matrix[i][j].vertices[4];
+            vertixesAndColour[(quadCounter * 24) + 8] = matrix[i][j].vertices[5];
+            vertixesAndColour[(quadCounter * 24) + 9] = matrix[i][j].colours[0];
+            vertixesAndColour[(quadCounter * 24) + 10] = matrix[i][j].colours[1];
+            vertixesAndColour[(quadCounter * 24) + 11] = matrix[i][j].colours[2];
+            //firstQuad
+            vertixesAndColour[(quadCounter * 24) + 12] = matrix[i][j].vertices[6];
+            vertixesAndColour[(quadCounter * 24) + 13] = matrix[i][j].vertices[7];
+            vertixesAndColour[(quadCounter * 24) + 14] = matrix[i][j].vertices[8];
+            vertixesAndColour[(quadCounter * 24) + 15] = matrix[i][j].colours[0];
+            vertixesAndColour[(quadCounter * 24) + 16] = matrix[i][j].colours[1];
+            vertixesAndColour[(quadCounter * 24) + 17] = matrix[i][j].colours[2];
+            //firstQuad
+            vertixesAndColour[(quadCounter * 24) + 18] = matrix[i][j].vertices[9];
+            vertixesAndColour[(quadCounter * 24) + 19] = matrix[i][j].vertices[10];
+            vertixesAndColour[(quadCounter * 24) + 20] = matrix[i][j].vertices[11];
+            vertixesAndColour[(quadCounter * 24) + 21] = matrix[i][j].colours[0];
+            vertixesAndColour[(quadCounter * 24) + 22] = matrix[i][j].colours[1];
+            vertixesAndColour[(quadCounter * 24) + 23] = matrix[i][j].colours[2];
+
+            quadCounter++;
+        }
+    }
+}
+//void simulateAstep(std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -197,6 +271,9 @@ int main()
     // uncomment this call to draw in wireframe polygons.
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    bool startSim = false;
+    bool mouseLeftPressed = false;
+
     // render loop
     // -----------
     //while (!glfwWindowShouldClose(window) && SDL_PollEvent(&event))
@@ -205,31 +282,59 @@ int main()
         // input
         // -----
         processInput(window);
-
         // render
         // ------
         glClearColor(0.2f, 0.3f, 0.9f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
         // render the triangle
         ourShader.use();
+
+
 
         int width;
         int height;
         glfwGetWindowSize(window, &width, &height);
-
         float timeValue = glfwGetTime();
         ourShader.setFloat("timeFormInit", timeValue);
         ourShader.setFloat("width", width);
         ourShader.setFloat("hight", height);
 
 
+        //if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && !mouseLeftPressed) {
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS ) {
+            double xpos, ypos;
+            glfwGetCursorPos(window, &xpos, &ypos);
+            //cout << xpos<<endl;
+            //cout << ypos<<endl;
+            int cellX = static_cast<int>(xpos);
+            int cellY = static_cast<int>(ypos);
+
+            if (cellX >= 0 && cellX < width && cellY >= 0 && cellY < height) {
+                updateGameMatrixAfterClick(((xpos/ width)*2)-1, ((ypos / height) * 2) - 1, matrix, rows, coloums);
+                updateVertixesColour(verticesAndColour, matrix, rows, coloums);
+                glBufferData(GL_ARRAY_BUFFER, (4 * rows * coloums * 6) * sizeof(float), verticesAndColour, GL_STATIC_DRAW);
+            }
+            mouseLeftPressed = true;
+        }
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
+            mouseLeftPressed=false;
+        }
+        if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+            startSim=true;
+        if (startSim == true) {
+            //simulateAstep();
+        }
+            
+
+
+        
+
+
+
         glBindVertexArray(VAO);
         int numOfVert = 6 * rows * coloums;
         glDrawElements(GL_TRIANGLES, numOfVert, GL_UNSIGNED_INT, 0);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
-
-
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
