@@ -7,6 +7,8 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include "windows.h" 
+
 //#include "../thirdparty/SDL3-3.2.10/include/SDL3/SDL_events.h"
 //#include "../thirdparty/SDL3-3.2.10/include/SDL3/SDL.h"
 
@@ -156,6 +158,7 @@ void updateVertixesColour(float* vertixesAndColour, std::vector<std::vector<bQua
 
 
 void lifeCicleCellUpdate(std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
+    std::vector<std::vector<bQuad>> matrixx=matrix;
     for (int row = 0; row < rows; row++)
     {
         for (int coloum = 0; coloum < coloums; coloum++)
@@ -165,13 +168,30 @@ void lifeCicleCellUpdate(std::vector<std::vector<bQuad>>& matrix, int rows, int 
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    if (i != 1 && j != 1 && row - 1 + i >= 0 && coloum - 1 + i >= 0 && row - 1 + i < rows && coloum - 1 + i < coloums)
-                        if (matrix[row-1+i][coloum - 1 + i].alive)
+                    if ((i != 1 || j != 1) && row - 1 + i >= 0 && coloum - 1 + i >= 0 && row - 1 + i < rows && coloum - 1 + i < coloums) {
+                        if (matrix[row - 1 + i][coloum - 1 + i].alive) {
                             aliveNeigbohursCounter++;
+                            //cout << "cell: " << row - 1 + i << " " << coloum - 1 + i << "  " << aliveNeigbohursCounter << endl;
+                        }
+                    }
                 }
             }
-            if (aliveNeigbohursCounter == 2 || aliveNeigbohursCounter == 3) {
-                matrix[row][coloum].alive = true;
+            //cout << "cell: " << row << " " << coloum << "  " << aliveNeigbohursCounter << endl;
+            if (!matrix[row][coloum].alive) {
+                if (aliveNeigbohursCounter == 3) {
+                    matrixx[row][coloum].alive = true;
+                }
+            }
+            else {
+                //cout << "aliveNeigbohursCounter " << aliveNeigbohursCounter << endl;
+                if (aliveNeigbohursCounter == 2 || aliveNeigbohursCounter == 3) {
+                    matrixx[row][coloum].alive = true;
+                }
+                else {
+                    matrixx[row][coloum].alive = false;
+                }
+            }
+            if (matrixx[row][coloum].alive) {
                 array<float, 3> colourss;
                 if ((row + coloum) % 2 == 0) {
                     colourss = { 0.0f, 0.5f, 0.0f };
@@ -179,10 +199,20 @@ void lifeCicleCellUpdate(std::vector<std::vector<bQuad>>& matrix, int rows, int 
                 else {
                     colourss = { 0.3f, 0.1f, 0.1f };
                 }
-                matrix[row][coloum].colours = colourss;
+                matrixx[row][coloum].colours = colourss;
+            } else {
+                array<float, 3> colourss;
+                if ((row + coloum) % 2 == 0) {
+                    colourss = { 0.1f, 0.1f, 0.1f };
+                }
+                else {
+                    colourss = { 0.2f, 0.2f, 0.2f };
+                }
+                matrixx[row][coloum].colours = colourss;
             }
         }
     }
+    matrix = matrixx;
 }
 void simulateAstep(std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
     lifeCicleCellUpdate(matrix, rows, coloums);
@@ -310,6 +340,7 @@ int main()
     //while (!glfwWindowShouldClose(window) && SDL_PollEvent(&event))
     while (!glfwWindowShouldClose(window))
     {
+        //Sleep(100);
         // input
         // -----
         processInput(window);
@@ -357,7 +388,7 @@ int main()
             simulateAstep(matrix, rows, coloums);
             updateVertixesColour(verticesAndColour, matrix, rows, coloums);
             glBufferData(GL_ARRAY_BUFFER, (4 * rows * coloums * 6) * sizeof(float), verticesAndColour, GL_STATIC_DRAW);
-            cout << "a step\n";
+            //cout << "a step\n";
         }
             
 
