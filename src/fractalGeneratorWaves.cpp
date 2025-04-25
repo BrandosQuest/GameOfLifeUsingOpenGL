@@ -159,45 +159,24 @@ void updateVertixesColour(float* vertixesAndColour, std::vector<std::vector<bQua
 
 void lifeCicleCellUpdate(std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
     std::vector<std::vector<bQuad>> matrixx=matrix;
-    cout << "neigbohurs per cell\n";
     for (int row = 0; row < rows; row++)
     {
         for (int coloum = 0; coloum < coloums; coloum++)
         {
             int aliveNeigbohursCounter = 0;
-            for (int i = -1; i < 2; i++)
+            for (int i = 0; i < 3; i++)
             {
-                for (int j = -1; j < 2; j++)
+                for (int j = 0; j < 3; j++)
                 {
-                    if (i == 0 && j == 0) {
-                        continue;
-                    }
-                    if(row==0 && i==-1) {
-                        continue;
-                    }
-                    if(row==rows-1 && i==1) {
-                        continue;
-                    }
-                    if(coloum ==0 && j==-1) {
-                        continue;
-                    }
-                    if(coloum == coloums-1 && j==1) {
-                        continue;
-                    }
-                    if (matrix[row + i][coloum + j].alive) {
-                        aliveNeigbohursCounter++;
-                    }
-                    /*
-                    if ( row - 1 + i >= 0 && coloum - 1 + i >= 0 && row - 1 + i < rows && coloum - 1 + i < coloums) {
+                    if ((i != 1 || j != 1) && row - 1 + i >= 0 && coloum - 1 + i >= 0 && row - 1 + i < rows && coloum - 1 + i < coloums) {
                         if (matrix[row - 1 + i][coloum - 1 + i].alive) {
                         //if (matrix[row - 1 + i][coloum - 1 + i].alive && row> 0 && coloum > 0 && row < rows && coloum < coloums) {
                             aliveNeigbohursCounter++;
                             //cout << "cell: " << row - 1 + i << " " << coloum - 1 + i << "  " << aliveNeigbohursCounter << endl;
                         }
-                    }*/
+                    }
                 }
             }
-            //cout << aliveNeigbohursCounter << "\t";
             //cout << "cell: " << row << " " << coloum << "  " << aliveNeigbohursCounter << endl;
             if (!matrix[row][coloum].alive) {
                 if (aliveNeigbohursCounter == 3) {
@@ -234,7 +213,6 @@ void lifeCicleCellUpdate(std::vector<std::vector<bQuad>>& matrix, int rows, int 
                 matrixx[row][coloum].colours = colourss;
             }
         }
-        //cout << "\n";
     }
     matrix = matrixx;
 }
@@ -357,7 +335,6 @@ int main()
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     bool startSim = false;
-    bool oldStartSim = false;
     bool mouseLeftPressed = false;
 
     // render loop
@@ -406,24 +383,14 @@ int main()
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
             mouseLeftPressed=false;
         }
-        if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
+        if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
             startSim=true;
-        }
-        if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_RELEASE) {
-            startSim=false;
-            oldStartSim = false;
-        }
-            
 
-        //if (startSim == true && oldStartSim == false) {
-        if (startSim == true ) {
+        if (startSim == true) {
             simulateAstep(matrix, rows, coloums);
             updateVertixesColour(verticesAndColour, matrix, rows, coloums);
             glBufferData(GL_ARRAY_BUFFER, (4 * rows * coloums * 6) * sizeof(float), verticesAndColour, GL_STATIC_DRAW);
             //cout << "a step\n";
-            startSim = false;
-            oldStartSim = true;
-
         }
             
 
