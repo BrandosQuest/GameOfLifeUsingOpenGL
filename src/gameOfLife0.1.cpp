@@ -9,9 +9,6 @@
 #include <array>
 #include "windows.h" 
 
-//#include "../thirdparty/SDL3-3.2.10/include/SDL3/SDL_events.h"
-//#include "../thirdparty/SDL3-3.2.10/include/SDL3/SDL.h"
-
 using namespace std;
 
 void parametersInput(int* rows, int* coloums) {
@@ -21,9 +18,9 @@ void parametersInput(int* rows, int* coloums) {
     cin >> *coloums;
 }
 struct bQuad {
-    float vertices[12];//4 points of x y z
+    float vertices[12] = {};//4 points of x y z
     bool alive = false;
-    array<float, 3> colours;//rgb
+    array<float, 3> colours = {};//rgb
 };
 
 void setVetixesOfQuadsInMatrix(std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
@@ -34,10 +31,10 @@ void setVetixesOfQuadsInMatrix(std::vector<std::vector<bQuad>>& matrix, int rows
         for (int j = 0; j < coloums; j++)
         {
             float verticess[12] = {
-                (j * cellWidth) - 1.0            , 1.0 - (i * cellHight)                , 0.0f,  // top left
-                (j * cellWidth) - 1.0 + cellWidth, 1.0 - (i * cellHight)                , 0.0f,  // top right
-                (j * cellWidth) - 1.0            , 1.0 - ((i * cellHight) + cellHight)  , 0.0f,  // bottom left 
-                (j * cellWidth) - 1.0 + cellWidth, 1.0 - ((i * cellHight) + cellHight)  , 0.0f,  // bottom right 
+                (j * cellWidth) - 1.0f            , 1.0f - (i * cellHight)                , 0.0f,  // top left
+                (j * cellWidth) - 1.0f + cellWidth, 1.0f - (i * cellHight)                , 0.0f,  // top right
+                (j * cellWidth) - 1.0f            , 1.0f - ((i * cellHight) + cellHight)  , 0.0f,  // bottom left 
+                (j * cellWidth) - 1.0f + cellWidth, 1.0f - ((i * cellHight) + cellHight)  , 0.0f,  // bottom right 
             };
             for (int v = 0; v < 12; ++v) {
                 matrix[i][j].vertices[v] = verticess[v];
@@ -155,11 +152,9 @@ void updateVertixesColour(float* vertixesAndColour, std::vector<std::vector<bQua
         }
     }
 }
-
-
 void lifeCicleCellUpdate(std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) {
     std::vector<std::vector<bQuad>> matrixx=matrix;
-    cout << "neigbohurs per cell\n";
+    //cout << "neigbohurs per cell\n";
     for (int row = 0; row < rows; row++)
     {
         for (int coloum = 0; coloum < coloums; coloum++)
@@ -256,10 +251,10 @@ void simulateAstep(std::vector<std::vector<bQuad>>& matrix, int rows, int coloum
     }
     matrix[row][coloum].colours = colourss;*/
 }
-//void simulateAstep(std::vector<std::vector<bQuad>>& matrix, int rows, int coloums) 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
+
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -271,7 +266,6 @@ int main()
     parametersInput(&rows, &coloums);
     std::vector<std::vector<bQuad>> matrix(rows, std::vector<bQuad>(coloums));
     setVetixesOfQuadsInMatrix(matrix, rows, coloums);
-
 
 
     // glfw: initialize and configure
@@ -313,6 +307,7 @@ int main()
     // preventing unnecessary rendering.
     // Add this after creating the OpenGL context (after glfwMakeContextCurrent)
     //glfwSwapInterval(1); // Enable vsync
+    glfwSwapInterval(0);
 
     
     float* verticesAndColour = new float[4 * rows * coloums * 6];
@@ -359,12 +354,21 @@ int main()
     bool startSim = false;
     bool oldStartSim = false;
     bool mouseLeftPressed = false;
+    int cycleCounter = 0;
+    //int cicleCounter2 = 0;
+    double glfwTime = glfwGetTime();
+    //double glfwTime2 = 0.0;
 
     // render loop
     // -----------
-    //while (!glfwWindowShouldClose(window) && SDL_PollEvent(&event))
     while (!glfwWindowShouldClose(window))
     {
+        cycleCounter++;
+        if (cycleCounter % 1000) {
+            cout << "cicles / second = " << cycleCounter / (glfwGetTime() - glfwTime) << "\n";
+            cycleCounter = 0;
+            glfwTime = glfwGetTime();
+        }
         //Sleep(100);
         // input
         // -----
@@ -391,8 +395,6 @@ int main()
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS ) {
             double xpos, ypos;
             glfwGetCursorPos(window, &xpos, &ypos);
-            //cout << xpos<<endl;
-            //cout << ypos<<endl;
             int cellX = static_cast<int>(xpos);
             int cellY = static_cast<int>(ypos);
 
@@ -420,16 +422,10 @@ int main()
             simulateAstep(matrix, rows, coloums);
             updateVertixesColour(verticesAndColour, matrix, rows, coloums);
             glBufferData(GL_ARRAY_BUFFER, (4 * rows * coloums * 6) * sizeof(float), verticesAndColour, GL_STATIC_DRAW);
-            //cout << "a step\n";
             startSim = false;
             oldStartSim = true;
-
         }
             
-
-
-        
-
 
 
         glBindVertexArray(VAO);
